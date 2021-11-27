@@ -10,17 +10,20 @@ function App() {
   const handleSubmit = async () => {
 
     const body = {
-      language: "cpp",
+      language: language,
       code: code
     };
-
-    const response = await axios.post("http://localhost:4000/code", body);
-    if(response.data.success)
-    {
-      setOutput(response.data.output);
-    }
-    else{
-      setOutput(response.data.message);
+    try {
+      const response = await axios.post("http://localhost:4000/code", body);
+      if(response.data.success)
+      {
+        setOutput(response.data.output);
+      }
+      else{
+        setOutput(response.data.message);
+      }
+    } catch (error) {
+      window.alert("Error Connecting to Server!!");
     }
   }
 

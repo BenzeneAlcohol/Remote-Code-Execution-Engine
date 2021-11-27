@@ -8,7 +8,7 @@ app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 
 const {Generator} = require('./helpers/CodeGen');
-const {CppExecuter} = require('./helpers/Exectuer')
+const {CppExecuter, PyExecuter} = require('./helpers/Exectuer')
 
 app.get('/', (req,res) => {
     res.send("Hello");
@@ -26,7 +26,14 @@ app.post('/code', async (req,res) => {
     const filePath = await Generator(language, code); //Generator generates the .cpp/.py file that is needed for further processing
     let outPut;
     try {
-        outPut = await CppExecuter(filePath); //Executes the .cpp file
+        if(language=== "cpp")
+        {
+            outPut = await CppExecuter(filePath); //Executes the .cpp file
+        }
+        else
+        {
+            outPut = await PyExecuter(filePath);
+        }
     } catch (error) {
         const newErr = error.stderr.split(filePath).join("\n");
         return res.json({

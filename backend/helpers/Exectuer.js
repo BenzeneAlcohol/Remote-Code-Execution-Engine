@@ -30,7 +30,26 @@ const CppExecuter = (filePath) => {
         return error;
     }
 } 
+const PyExecuter = (filePath) => {
+    try {
+        return new Promise((resolve, reject) => {
+            exec(`python ${filePath}`, (error, stdout, stderr)=>{
+                if(error)
+                {
+                    reject({error, stderr});
+                }
+                if(stderr){
+                    reject(stderr);
+                }
+                resolve(stdout);
+            });
+        })
+    } catch (error) {
+        return error;
+    }
+} 
 
 module.exports = {
-    CppExecuter
+    CppExecuter,
+    PyExecuter
 };
