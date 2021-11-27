@@ -1,0 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+.App{
+    font-family: 'Poppins', sans-serif;
+}
+
+.codeForm{
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+}
+
+.codeForm button{
+    width: 50px;
+    margin-top: 30px;
+}
