@@ -15,6 +15,7 @@ const CppExecuter = (filePath) => {
 
     try {
         return new Promise((resolve, reject) => {
+            //`g++ ${filepath} -o ${outPath} && cd ${codeOutput} && ./${jobId}.out`, for LINUX
             exec(`g++ ${filePath} -o ${outPath} && cd ${codeOuput} && ${jobID}.exe`, (error, stdout, stderr)=>{
                 if(error)
                 {

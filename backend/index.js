@@ -1,7 +1,10 @@
 const express = require('express');
 const cors = require('cors');
+const connectDB = require('./config/mongoose');
+const Job = require('./models/Job');
 
 const app = express();
+connectDB();
 
 app.use(cors());
 app.use(express.urlencoded({extended: true}));
@@ -24,7 +27,18 @@ app.post('/code', async (req,res) => {
         })
     }
     const filePath = await Generator(language, code); //Generator generates the .cpp/.py file that is needed for further processing
+
+    const job = await new Job({language, filePath}).save();
+    const jobID = job._id;
+    console.log(job);
+    console.log(jobID.toString());
+
+    res.status(201).json({
+        success: true,
+        jobID
+    });
     let outPut;
+    job.startedAt = new Date();
     try {
         if(language=== "cpp")
         {
@@ -34,16 +48,58 @@ app.post('/code', async (req,res) => {
         {
             outPut = await PyExecuter(filePath);
         }
+    job.completedAt = new Date();
+    job.status = "success";
+    job.output = outPut;
+
+    await job.save();
+
+    console.log(job);
     } catch (error) {
+        job.completedAt = new Date();
+        job.status = "error";
         const newErr = error.stderr.split(filePath).join("\n");
-        return res.json({
+        job.output = newErr;
+        await job.save();
+        console.log(job);
+        // return res.json({
+        //     success: false,
+        //     message: newErr
+        // })
+    }
+    // res.json({
+    //     success: true,
+    //     output: outPut});
+})
+
+app.get('/status/:id', async (req,res) => {
+    const jobID = req.params.id;
+    if(jobID == undefined)
+    {
+        return res.status(400).json({
             success: false,
-            message: newErr
+            error: "Wrong ID Params"
         })
     }
-    res.json({
-        success: true,
-        output: outPut});
+    try {
+        const job = await Job.findById(jobID);
+        if(job==undefined)
+        {
+            return res.status(400).json({
+                success: false,
+                error: "Invalid ID Params"
+            })
+        }
+        res.status(200).json({
+            success: true,
+            job
+        });
+    } catch (error) {
+        return res.status(400).json({
+            success: false,
+            error: error
+        })
+    }
 })
 
 app.listen(4000, () => {
