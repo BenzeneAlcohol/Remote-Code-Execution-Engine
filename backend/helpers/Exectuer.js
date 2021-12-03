@@ -10,26 +10,53 @@ if(!fs.existsSync(codeOuput)){
 
 const CppExecuter = (filePath) => {
 
+    var isWin = process.platform === "win32";
+
     const jobID = path.basename(filePath).split(".")[0];
     const outPath = path.join(codeOuput, `${jobID}.exe`);
 
-    try {
-        return new Promise((resolve, reject) => {
-            //`g++ ${filepath} -o ${outPath} && cd ${codeOutput} && ./${jobId}.out`, for LINUX
-            exec(`g++ ${filePath} -o ${outPath} && cd ${codeOuput} && ${jobID}.exe`, (error, stdout, stderr)=>{
-                if(error)
-                {
-                    reject({error, stderr});
-                }
-                if(stderr){
-                    reject(stderr);
-                }
-                resolve(stdout);
-            });
-        })
-    } catch (error) {
-        return error;
+    if(isWin)
+    {
+        try {
+            return new Promise((resolve, reject) => {
+                //`g++ ${filePath} -o ${outPath} && cd ${codeOuput} && ./${jobID}.out`, for LINUX
+                exec(`g++ ${filePath} -o ${outPath} && cd ${codeOuput} && ${jobID}.exe`, (error, stdout, stderr)=>{
+                    if(error)
+                    {
+                        reject({error, stderr});
+                    }
+                    if(stderr){
+                        reject(stderr);
+                    }
+                    resolve(stdout);
+                });
+            })
+        } catch (error) {
+            return error;
+        }
     }
+    else
+    {
+        try {
+            return new Promise((resolve, reject) => {
+                //`g++ ${filePath} -o ${outPath} && cd ${codeOuput} && ./${jobID}.out`, for LINUX
+                exec(`g++ ${filePath} -o ${outPath} && cd ${codeOuput} && ./${jobID}.out`, (error, stdout, stderr)=>{
+                    if(error)
+                    {
+                        reject({error, stderr});
+                    }
+                    if(stderr){
+                        reject(stderr);
+                    }
+                    resolve(stdout);
+                });
+            })
+        } catch (error) {
+            return error;
+        }
+    }
+
+
 } 
 const PyExecuter = (filePath) => {
     try {
