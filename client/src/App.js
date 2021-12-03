@@ -78,7 +78,7 @@ function App() {
         </h2>
         <p>{output}</p>
         <h3>
-          Run time: {time} ms
+          Run time: {time} s
         </h3>
       </div>
     </div>
