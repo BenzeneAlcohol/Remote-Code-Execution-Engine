@@ -44,6 +44,8 @@ Install dependencies
 Start the server
 
 There are two ways to start the server.
+\
+From the initial directory:
 
 ```bash
   cd backend
