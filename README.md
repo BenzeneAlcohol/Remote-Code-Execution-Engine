@@ -118,3 +118,6 @@ This obviously seems a bit server heavy, because we are always sending a request
 
 2. Auto delete the files once they are compiled and finished. 
 
+## Acknowledgements
+
+ - [Aayush Joglekar](https://github.com/zerefwayne)
